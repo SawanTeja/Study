@@ -9,7 +9,10 @@ export const SECTIONS = [
     category: 'OS',
     items: [
       { name: 'Intro to OS', path: '/content/OS/intro-to-os.md' },
-      { name: 'System Calls', path: '/content/OS/system-calls.md' }
+      { name: 'System Calls', path: '/content/OS/system-calls.md' },
+      { name: 'Process Fundamentals', path: '/content/OS/process-fundamentals.md' },
+      { name: 'Process Scheduling', path: '/content/OS/process-scheduling.md' },
+      { name: 'CPU Scheduling Algorithms', path: '/content/OS/cpu-scheduling.md' }
     ]
   },
   {
