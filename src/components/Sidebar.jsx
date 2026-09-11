@@ -57,7 +57,9 @@ export const SECTIONS = [
     icon: <LayoutTemplate size={18} />,
     category: 'Projects',
     items: [
-      { name: 'E-Commerce Platform', path: '/content/Projects/ecommerce.md' }
+      { name: 'E-Commerce Platform', path: '/content/Projects/ecommerce.md' },
+      { name: 'EMPLO Backend', path: '/content/Projects/EMPLO/backend.md' },
+      { name: 'EMPLO Frontend', path: '/content/Projects/EMPLO/frontend.md' }
     ]
   }
 ];
