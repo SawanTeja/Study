@@ -12,7 +12,20 @@ export const SECTIONS = [
       { name: 'System Calls', path: '/content/OS/system-calls.md' },
       { name: 'Process Fundamentals', path: '/content/OS/process-fundamentals.md' },
       { name: 'Process Scheduling', path: '/content/OS/process-scheduling.md' },
-      { name: 'CPU Scheduling Algorithms', path: '/content/OS/cpu-scheduling.md' }
+      { name: 'CPU Scheduling Algorithms', path: '/content/OS/cpu-scheduling.md' },
+      { name: 'Threads', path: '/content/OS/threads.md' },
+      { name: 'Concurrency Basics', path: '/content/OS/concurrency-basics.md' },
+      { name: 'Process Synchronization', path: '/content/OS/process-synchronization.md' },
+      { name: 'Deadlocks', path: '/content/OS/deadlocks.md' },
+      { name: 'Memory Management', path: '/content/OS/memory-management.md' },
+      { name: 'Paging and Virtual Memory', path: '/content/OS/paging-and-virtual-memory.md' },
+      { name: 'Segmentation', path: '/content/OS/segmentation.md' },
+      { name: 'Process Memory', path: '/content/OS/process-memory.md' },
+      { name: 'Inter-Process Communication', path: '/content/OS/ipc.md' },
+      { name: 'File Systems', path: '/content/OS/file-systems.md' },
+      { name: 'I/O Systems', path: '/content/OS/io-systems.md' },
+      { name: 'Disk Scheduling', path: '/content/OS/disk-scheduling.md' },
+      { name: 'Linux Knowledge', path: '/content/OS/linux-knowledge.md' }
     ]
   },
   {
