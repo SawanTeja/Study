@@ -1,6 +1,6 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { BookOpen, Code, Database, LayoutTemplate, Layers, Monitor } from 'lucide-react';
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { BookOpen, Code, Database, LayoutTemplate, Layers, Monitor, ChevronDown, ChevronRight } from 'lucide-react';
 
 export const SECTIONS = [
   {
@@ -74,6 +74,46 @@ export const SECTIONS = [
   }
 ];
 
+const SidebarSectionComponent = ({ section }) => {
+  const location = useLocation();
+  
+  // Check if any item in this section is currently active to open it by default
+  const isActiveSection = section.items.some(item => {
+    const itemPath = item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`;
+    return location.pathname === itemPath;
+  });
+
+  const [isOpen, setIsOpen] = useState(isActiveSection); 
+
+  return (
+    <div className="sidebar-section">
+      <h3 
+        className="sidebar-section-title flex items-center justify-between cursor-pointer hover:text-gray-400 transition-colors select-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{section.title}</span>
+        {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+      </h3>
+      
+      {isOpen && (
+        <div className="sidebar-nav mt-2">
+          {section.items.map((item, itemIdx) => (
+            <NavLink 
+              key={itemIdx}
+              to={item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+              state={item.repo ? { treeUrl: item.path } : { filePath: item.path }}
+              className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+            >
+              {section.icon}
+              <span>{item.name}</span>
+            </NavLink>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function Sidebar() {
   return (
     <aside className="sidebar">
@@ -95,22 +135,7 @@ export default function Sidebar() {
         <div style={{ height: '2rem' }}></div>
 
         {SECTIONS.map((section, idx) => (
-          <div key={idx} className="sidebar-section">
-            <h3 className="sidebar-section-title">{section.title}</h3>
-            <div className="sidebar-nav">
-              {section.items.map((item, itemIdx) => (
-                <NavLink 
-                  key={itemIdx}
-                  to={item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  state={item.repo ? { treeUrl: item.path } : { filePath: item.path }}
-                  className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
-                >
-                  {section.icon}
-                  <span>{item.name}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
+          <SidebarSectionComponent key={idx} section={section} />
         ))}
       </nav>
     </aside>
