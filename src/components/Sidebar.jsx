@@ -59,7 +59,9 @@ export const SECTIONS = [
     items: [
       { name: 'E-Commerce Platform', path: '/content/Projects/ecommerce.md' },
       { name: 'EMPLO Backend', path: '/content/Projects/EMPLO/backend.md' },
-      { name: 'EMPLO Frontend', path: '/content/Projects/EMPLO/frontend.md' }
+      { name: 'EMPLO Frontend', path: '/content/Projects/EMPLO/frontend.md' },
+      { name: 'Forever Backend', path: '/content/Projects/Forever/backend.md' },
+      { name: 'Forever Frontend', path: '/content/Projects/Forever/frontend.md' }
     ]
   }
 ];
