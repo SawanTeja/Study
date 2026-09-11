@@ -63,6 +63,14 @@ export const SECTIONS = [
       { name: 'Forever Backend', path: '/content/Projects/Forever/backend.md' },
       { name: 'Forever Frontend', path: '/content/Projects/Forever/frontend.md' }
     ]
+  },
+  {
+    title: 'Codebases',
+    icon: <Code size={18} />,
+    category: 'Codebase',
+    items: [
+      { name: 'Forever Repository', path: '/repos/Forever/tree.json', repo: 'Forever' }
+    ]
   }
 ];
 
@@ -93,8 +101,8 @@ export default function Sidebar() {
               {section.items.map((item, itemIdx) => (
                 <NavLink 
                   key={itemIdx}
-                  to={`/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-                  state={{ filePath: item.path }}
+                  to={item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  state={item.repo ? { treeUrl: item.path } : { filePath: item.path }}
                   className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
                 >
                   {section.icon}
