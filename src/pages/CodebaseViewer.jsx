@@ -49,41 +49,92 @@ const FileTreeNode = ({ node, onFileSelect, level = 0 }) => {
   );
 };
 
+// Helper to convert GitHub's flat tree to our nested structure
+function buildTreeFromGitHub(flatTree) {
+  const root = { name: 'root', type: 'directory', children: [] };
+  
+  flatTree.forEach(item => {
+    // skip irrelevant files like we did in local script
+    if (item.path.includes('.git/') || item.path.includes('node_modules/') || item.path.includes('.DS_Store')) return;
+    
+    const parts = item.path.split('/');
+    let currentDir = root;
+    
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const isFile = i === parts.length - 1 && item.type === 'blob';
+      
+      let child = currentDir.children.find(c => c.name === part);
+      if (!child) {
+        child = {
+          name: part,
+          type: isFile ? 'file' : 'directory',
+          path: item.path,
+          children: []
+        };
+        currentDir.children.push(child);
+      }
+      currentDir = child;
+    }
+  });
+
+  // Recursive sort function
+  const sortTree = (node) => {
+    if (node.children) {
+      node.children.sort((a, b) => {
+        if (a.type === b.type) return a.name.localeCompare(b.name);
+        return a.type === 'directory' ? -1 : 1;
+      });
+      node.children.forEach(sortTree);
+    }
+  };
+  
+  sortTree(root);
+  return root;
+}
+
 export default function CodebaseViewer() {
   const location = useLocation();
   const { repo } = useParams();
+  
+  const repoOwner = location.state?.repoOwner || 'SawanTeja';
+  const repoName = location.state?.repoName || repo;
+  const repoBranch = location.state?.repoBranch || 'main';
+
   const [tree, setTree] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Fallback if accessed directly without state
-  const treeUrl = location.state?.treeUrl || `/repos/${repo}/tree.json`;
-
   useEffect(() => {
     setLoading(true);
-    fetch(treeUrl)
-      .then(res => res.json())
+    const treeApiUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees/${repoBranch}?recursive=1`;
+    
+    fetch(treeApiUrl)
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch tree from GitHub');
+        return res.json();
+      })
       .then(data => {
-        setTree(data);
+        const nestedTree = buildTreeFromGitHub(data.tree);
+        setTree(nestedTree);
         setLoading(false);
       })
       .catch(err => {
-        console.error('Failed to load repo tree:', err);
+        console.error('Failed to load GitHub repo tree:', err);
         setLoading(false);
       });
-  }, [treeUrl]);
+  }, [repoOwner, repoName, repoBranch]);
 
   const handleFileSelect = (node) => {
     setSelectedFile(node);
-    // Construct path from the root
-    let fullPath = node.path;
-    // node.path from our script is relative to the targetDir. So we join with /repos/Forever/
-    const filePath = `/repos/${repo}/${fullPath ? fullPath + '/' : ''}${node.name}`;
     
-    fetch(filePath)
+    // Fetch raw content from GitHub
+    const rawUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${repoBranch}/${node.path}`;
+    
+    fetch(rawUrl)
       .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch file');
+        if (!res.ok) throw new Error('Failed to fetch file from GitHub');
         return res.text();
       })
       .then(text => setFileContent(text))
@@ -95,27 +146,18 @@ export default function CodebaseViewer() {
   const getLanguage = (filename) => {
     const ext = filename.split('.').pop().toLowerCase();
     switch (ext) {
-      case 'js':
-      case 'jsx':
-        return 'javascript';
-      case 'ts':
-      case 'tsx':
-        return 'typescript';
-      case 'css':
-        return 'css';
-      case 'html':
-        return 'html';
-      case 'json':
-        return 'json';
-      case 'md':
-        return 'markdown';
-      default:
-        return 'text';
+      case 'js': case 'jsx': return 'javascript';
+      case 'ts': case 'tsx': return 'typescript';
+      case 'css': return 'css';
+      case 'html': return 'html';
+      case 'json': return 'json';
+      case 'md': return 'markdown';
+      default: return 'text';
     }
   };
 
   if (loading) {
-    return <div className="loading-container">Loading Codebase...</div>;
+    return <div className="loading-container">Loading Codebase from GitHub...</div>;
   }
 
   if (!tree) {

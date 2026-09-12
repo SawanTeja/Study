@@ -69,7 +69,7 @@ export const SECTIONS = [
     icon: <Code size={18} />,
     category: 'Codebase',
     items: [
-      { name: 'Forever Repository', path: '/repos/Forever/tree.json', repo: 'Forever' }
+      { name: 'Forever Repository', repoOwner: 'SawanTeja', repoName: 'Forever', repoBranch: 'main' }
     ]
   }
 ];
@@ -79,7 +79,7 @@ const SidebarSectionComponent = ({ section }) => {
   
   // Check if any item in this section is currently active to open it by default
   const isActiveSection = section.items.some(item => {
-    const itemPath = item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`;
+    const itemPath = item.repoName ? `/codebase/${item.repoName}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`;
     return location.pathname === itemPath;
   });
 
@@ -100,8 +100,8 @@ const SidebarSectionComponent = ({ section }) => {
           {section.items.map((item, itemIdx) => (
             <NavLink 
               key={itemIdx}
-              to={item.repo ? `/codebase/${item.repo}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
-              state={item.repo ? { treeUrl: item.path } : { filePath: item.path }}
+              to={item.repoName ? `/codebase/${item.repoName}` : `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+              state={item.repoName ? { repoOwner: item.repoOwner, repoName: item.repoName, repoBranch: item.repoBranch } : { filePath: item.path }}
               className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
             >
               {section.icon}
