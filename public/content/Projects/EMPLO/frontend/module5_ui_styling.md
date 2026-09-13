@@ -44,16 +44,16 @@ Emplo uses utility libraries like `clsx` and `tailwind-merge` (standard in shadc
 ```mermaid
 flowchart TD
     TailwindConfig["tailwind.config.ts"]
-    Radix["Radix Primitive: Root, Trigger, Content"]
+    Radix["Radix UI Primitives: Root, Trigger, Content"]
     
     subgraph ButtonComponent ["src/components/ui/button.tsx"]
-        DefaultClasses["Default: 'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors'"]
-        VariantClasses["Variant (e.g., 'destructive'): 'bg-red-500 text-destructive-foreground hover:bg-red-500/90'"]
-        TailwindMerge["cn() Utility (clsx + tailwind-merge)"]
+        DefaultClasses["Default Base Classes (inline-flex, font-medium)"]
+        VariantClasses["Variant Classes (destructive: bg-red-500)"]
+        TailwindMerge["cn() Utility (clsx and tailwind-merge)"]
     end
     
     subgraph DevUsage ["Developer Usage (Feature Component)"]
-        CustomProps["Button variant='destructive' className='w-full mt-4'"]
+        CustomProps["Custom Props: variant=destructive className=w-full mt-4"]
     end
     
     TailwindConfig -.->|Defines| VariantClasses
@@ -63,7 +63,7 @@ flowchart TD
     VariantClasses --> TailwindMerge
     CustomProps --> TailwindMerge
     
-    TailwindMerge -->|Intelligently resolves conflicts| FinalDOM["DOM: button class='inline-flex... bg-red-500 w-full mt-4'"]
+    TailwindMerge -->|Intelligently resolves conflicts| FinalDOM["DOM: button with merged classes"]
 ```
 
 ## 3. The Re-render Cycle (Sequence Diagram)

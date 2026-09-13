@@ -44,6 +44,9 @@ export default function Mermaid({ chart }) {
 
     if (!chart || !chart.trim()) return;
 
+    setSvg('');
+    setError(null);
+
     renderQueue = renderQueue.then(async () => {
       if (!isMounted) return;
 

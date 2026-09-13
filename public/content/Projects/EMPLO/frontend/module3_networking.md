@@ -64,22 +64,22 @@ This DFD shows the complex interaction between the UI, the caching layer, the tr
 
 ```mermaid
 flowchart TD
-    UI["React Component (e.g., Dashboard)"]
-    Hook["Custom Hook (e.g., useEmployerData)"]
+    UI["React Component (e.g. Dashboard)"]
+    Hook["Custom Hook (useEmployerData)"]
     
     subgraph StateManagement ["State Management"]
         QueryCache[("React Query Global Cache")]
     end
     
-    subgraph AuthTransport ["Auth & Transport"]
+    subgraph AuthTransport ["Auth and Transport"]
         AuthContext[("Clerk Session / In-Memory JWT")]
-        Factory["getAuthClient()"]
+        Factory["getAuthClient Utility"]
         AxiosInstance["Axios Interceptor"]
     end
     
     Backend[("Emplo Node.js Backend")]
 
-    UI -->|1. Mounts & calls Hook| Hook
+    UI -->|1. Mounts and calls Hook| Hook
     Hook -->|2. Check Cache for QueryKey| QueryCache
     
     QueryCache -->|3a. Cache Hit: Fresh Data| Hook
@@ -89,7 +89,7 @@ flowchart TD
     AxiosInstance -->|6. Inject Bearer Token Header| Backend
     
     Backend -->|7. JSON Response or Error| AxiosInstance
-    AxiosInstance -->|8. Update Cache & Invalidate| QueryCache
+    AxiosInstance -->|8. Update Cache and Invalidate| QueryCache
     QueryCache -->|9. Reactively Push New Data| Hook
     Hook -->|10. Trigger Re-render| UI
 ```
@@ -111,7 +111,7 @@ sequenceDiagram
     
     ReactQuery->>Clerk: useAuth().getToken()
     activate Clerk
-    Clerk-->>ReactQuery: Promise<"eyJhbGciOi..."> (JWT)
+    Clerk-->>ReactQuery: Resolve JWT eyJhbGciOi...
     deactivate Clerk
     
     ReactQuery->>Axios: getAuthClient(JWT).get('/api/dashboard')
@@ -126,13 +126,13 @@ sequenceDiagram
         Server->>Server: Validate JWT Signature (Auth.js Middleware)
         Server-->>Axios: 200 OK + JSON Payload
         Axios-->>ReactQuery: Resolve Promise(Data)
-        ReactQuery-->>UI: Re-render with `data`, `isLoading: false`
+        ReactQuery-->>UI: Re-render with data (isLoading: false)
     else Sad Path (401 Unauthorized / Token Expired)
         Server->>Server: JWT Validation Fails
         Server-->>Axios: 401 Unauthorized
         Note over Axios: Axios Error Interceptor<br/>catches 4xx/5xx status
         Axios-->>ReactQuery: Reject Promise(Error)
-        ReactQuery-->>UI: Re-render with `isError: true`
+        ReactQuery-->>UI: Re-render with isError: true
         Note over UI: UI displays Error Boundary or redirects to login
     end
     

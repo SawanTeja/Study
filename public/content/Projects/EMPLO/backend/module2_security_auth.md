@@ -120,11 +120,11 @@ This DFD visualizes the flow of trust: from the bearer token presented by the cl
 flowchart TD
     Client(["Client Request: Authorization: Bearer JWT"])
     AuthGuard["verifyClerkToken Middleware"]
-    HeaderCheck{"Has 'Bearer '?"}
+    HeaderCheck{"Has Bearer Token?"}
     Reject401["Return 401 Unauthorized"]
     
     subgraph CryptoLayer ["Cryptographic Verification Layer"]
-        HeaderParser["Read JWT Header: kid"]
+        HeaderParser["Read JWT Header kid"]
         JWKSCache[("JWKS In-Memory Key Cache")]
         ClerkServer[("Clerk JWKS Endpoint /v1/jwks")]
         CryptoEngine["jwt.verify RS256 Engine"]
@@ -141,11 +141,11 @@ flowchart TD
     HeaderCheck -->|Yes| HeaderParser
     
     HeaderParser -->|Lookup kid| JWKSCache
-    JWKSCache -->|Cache Miss / Expired: Fetch Public Cert| ClerkServer
+    JWKSCache -->|Cache Miss: Fetch Public Cert| ClerkServer
     ClerkServer -->|Store Public Key| JWKSCache
     JWKSCache -->|Return RSA Public Key| CryptoEngine
     
-    CryptoEngine --> SignatureValid{"Signature & Expiry Valid?"}
+    CryptoEngine --> SignatureValid{"Signature and Expiry Valid?"}
     SignatureValid -->|Invalid / Expired| Reject401
     SignatureValid -->|Valid| ContextInject
     

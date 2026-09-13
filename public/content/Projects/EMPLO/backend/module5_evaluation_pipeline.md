@@ -153,26 +153,26 @@ This DFD shows how an interview moves from live completion into background audit
 
 ```mermaid
 flowchart TD
-    CandidateUI([Candidate Finishes Interview])
-    LiveEndpoint[POST /ask Limit OR POST /complete]
+    CandidateUI(["Candidate Finishes Interview"])
+    LiveEndpoint["POST /ask Limit OR POST /complete"]
     
-    subgraph Transcript Finalization
-        MarkComplete[Set Transcript status: completed]
-        MongoTranscript[(MongoDB: transcripts Collection)]
+    subgraph TranscriptFinalization ["Transcript Finalization"]
+        MarkComplete["Set Transcript status: completed"]
+        MongoTranscript[("MongoDB: transcripts Collection")]
     end
     
-    subgraph Asynchronous Evaluation Worker
-        EvaluatorTrigger[evaluateInterview Task]
-        FetchData[Aggregate: Full Transcript + Job Schema + Resume]
-        PromptAssembler[LLM Judge Prompt Builder]
-        GeminiJudge[(Google Gemini 1.5 - Temp: 0.2)]
-        JSONSanitizer[JSON Validation & Parser]
+    subgraph AsyncWorker ["Asynchronous Evaluation Worker"]
+        EvaluatorTrigger["evaluateInterview Task"]
+        FetchData["Aggregate: Full Transcript + Job Schema + Resume"]
+        PromptAssembler["LLM Judge Prompt Builder"]
+        GeminiJudge[("Google Gemini 1.5 - Temp: 0.2")]
+        JSONSanitizer["JSON Validation & Parser"]
     end
     
-    subgraph Employer Scorecard
-        ScorecardModel[new InterviewScore Document]
-        MongoScorecards[(MongoDB: interview_scores Collection)]
-        EmployerDashboard([Employer Review Portal])
+    subgraph EmployerScorecard ["Employer Scorecard"]
+        ScorecardModel["new InterviewScore Document"]
+        MongoScorecards[("MongoDB: interview_scores Collection")]
+        EmployerDashboard(["Employer Review Portal"])
     end
 
     CandidateUI --> LiveEndpoint
@@ -245,7 +245,7 @@ sequenceDiagram
     Note over Employer: Later, Employer logs in to review candidate...
     Employer->>DB: GET /interview-scores/int_789
     activate DB
-    DB-->>Employer: Return Scorecard with Breakdown & Recommendation
+    DB-->>Employer: Return Scorecard with Breakdown and Recommendation
     deactivate DB
     Employer->>Employer: Render Visual Candidate Assessment
 ```

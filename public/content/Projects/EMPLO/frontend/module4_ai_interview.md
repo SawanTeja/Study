@@ -36,10 +36,10 @@ This diagram shows how raw hardware data flows safely to the cloud without crash
 
 ```mermaid
 flowchart TD
-    Hardware["Candidate Webcam & Mic"]
+    Hardware["Candidate Webcam and Mic"]
     Recorder["Browser MediaRecorder API"]
     
-    subgraph LocalStorage ["Local Browser Storage (Persistent)"]
+    subgraph LocalStorage ["Local Browser Persistent Storage"]
         IndexedDB[("IndexedDB: interviewCache")]
     end
     
@@ -51,14 +51,14 @@ flowchart TD
     
     subgraph CloudInfrastructure ["Cloud Infrastructure"]
         Backend[("Emplo Node.js API")]
-        Storage[("AWS S3 / Backblaze B2")]
+        Storage[("AWS S3 or Backblaze B2")]
     end
 
     Hardware -->|Raw Stream| Recorder
     Hardware -->|Raw Stream| ProctorEngine
     
     Recorder -->|Emit 5s Video Blob| EventLoop
-    EventLoop -->|Write Blob - Clear RAM| IndexedDB
+    EventLoop -->|Write Blob, Clear RAM| IndexedDB
     
     ProctorEngine -->|Batch Anomalies| EventLoop
     EventLoop -->|HTTP POST /proctoring| Backend
