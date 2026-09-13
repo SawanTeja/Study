@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
-import { SECTIONS } from '../components/Sidebar';
+import { SECTIONS, flattenItems } from '../components/Sidebar';
+import Mermaid from '../components/Mermaid';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -13,14 +14,10 @@ export default function MarkdownViewer() {
   const { category, topic } = useParams();
   const navigate = useNavigate();
 
-  // Flatten items to compute next and prev
-  const allItems = SECTIONS.flatMap(section => 
-    section.items.map(item => ({
-      ...item,
-      category: section.category,
-      routePath: `/topic/${section.category}/${item.name.toLowerCase().replace(/\s+/g, '-')}`
-    }))
-  );
+  // Flatten items to compute next and prev (recursively supporting nested subgroups)
+  const allItems = useMemo(() => SECTIONS.flatMap(section => 
+    flattenItems(section.items, section.category)
+  ), []);
 
   const currentPath = `/topic/${category}/${topic}`;
   const currentIndex = allItems.findIndex(item => item.routePath === currentPath);
@@ -29,8 +26,9 @@ export default function MarkdownViewer() {
   const nextItem = currentIndex < allItems.length - 1 && currentIndex !== -1 ? allItems[currentIndex + 1] : null;
 
   useEffect(() => {
-    // Determine file path. Either from location state or fallback to a guess based on category/topic.
-    const filePath = location.state?.filePath || `/content/${category}/${topic}.md`;
+    // Determine file path: prefer location.state, fallback to matched item path, or default convention
+    const matchedItem = allItems.find(item => item.routePath === currentPath);
+    const filePath = location.state?.filePath || matchedItem?.path || `/content/${category}/${topic}.md`;
     
     setLoading(true);
     fetch(filePath)
@@ -48,7 +46,7 @@ export default function MarkdownViewer() {
         setContent(`# 404 - Not Found\n\nThe requested content could not be loaded.\n\nError: ${err.message}`);
         setLoading(false);
       });
-  }, [location.state, category, topic]);
+  }, [location.state, category, topic, currentPath, allItems]);
 
   if (loading) {
     return (
@@ -64,8 +62,11 @@ export default function MarkdownViewer() {
       <Markdown 
         remarkPlugins={[remarkGfm]}
         components={{
-          code({node, inline, className, children, ...props}) {
-            const match = /language-(\w+)/.exec(className || '')
+          code({node: _node, inline, className, children, ...props}) {
+            const match = /language-(\w+)/.exec(className || '');
+            if (!inline && match && match[1] === 'mermaid') {
+              return <Mermaid chart={String(children).replace(/\n$/, '')} />;
+            }
             return !inline && match ? (
               <SyntaxHighlighter
                 {...props}
@@ -78,7 +79,7 @@ export default function MarkdownViewer() {
               <code {...props} className={className}>
                 {children}
               </code>
-            )
+            );
           }
         }}
       >
