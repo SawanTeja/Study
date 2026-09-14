@@ -170,6 +170,115 @@ export const SECTIONS = [
           }
         ]
       },
+      {
+        name: 'Plannify',
+        isGroup: true,
+        icon: <Folder size={16} />,
+        subsections: [
+          {
+            name: 'Frontend',
+            icon: <Globe size={15} />,
+            items: [
+              { 
+                name: 'Module 1: Core Architecture & Navigation', 
+                slug: 'plannify-frontend-module-1', 
+                path: '/content/Projects/Plannify/frontend/01_CORE_ARCHITECTURE_AND_NAVIGATION.md' 
+              },
+              { 
+                name: 'Module 2: Global State, Storage & Alerts', 
+                slug: 'plannify-frontend-module-2', 
+                path: '/content/Projects/Plannify/frontend/02_GLOBAL_STATE_STORAGE_AND_ALERTS.md' 
+              },
+              { 
+                name: 'Module 3: Auth Services & Backend API', 
+                slug: 'plannify-frontend-module-3', 
+                path: '/content/Projects/Plannify/frontend/03_AUTH_SERVICES_AND_BACKEND_API.md' 
+              },
+              { 
+                name: 'Module 4: Drive Backup & Sync Engine', 
+                slug: 'plannify-frontend-module-4', 
+                path: '/content/Projects/Plannify/frontend/04_DRIVE_BACKUP_AND_SYNC_ENGINE.md' 
+              },
+              { 
+                name: 'Module 5: Notification & Scheduler', 
+                slug: 'plannify-frontend-module-5', 
+                path: '/content/Projects/Plannify/frontend/05_NOTIFICATION_AND_SCHEDULER.md' 
+              },
+              { 
+                name: 'Module 6: Onboarding & User Setup', 
+                slug: 'plannify-frontend-module-6', 
+                path: '/content/Projects/Plannify/frontend/06_ONBOARDING_AND_USER_SETUP.md' 
+              },
+              { 
+                name: 'Module 7: Home Summary Dashboard', 
+                slug: 'plannify-frontend-module-7', 
+                path: '/content/Projects/Plannify/frontend/07_HOME_SUMMARY_DASHBOARD.md' 
+              },
+              { 
+                name: 'Module 8: Habit Tracking & Gamification', 
+                slug: 'plannify-frontend-module-8', 
+                path: '/content/Projects/Plannify/frontend/08_HABIT_TRACKING_AND_GAMIFICATION.md' 
+              },
+              { 
+                name: 'Module 9: Task Management, Pomodoro & Matrix', 
+                slug: 'plannify-frontend-module-9', 
+                path: '/content/Projects/Plannify/frontend/09_TASK_MANAGEMENT_POMODORO_AND_MATRIX.md' 
+              },
+              { 
+                name: 'Module 10: Attendance Tracking & Calculator', 
+                slug: 'plannify-frontend-module-10', 
+                path: '/content/Projects/Plannify/frontend/10_ATTENDANCE_TRACKING_AND_CALCULATOR.md' 
+              },
+              { 
+                name: 'Module 11: Budget Planner & Expense Analytics', 
+                slug: 'plannify-frontend-module-11', 
+                path: '/content/Projects/Plannify/frontend/11_BUDGET_PLANNER_AND_EXPENSE_ANALYTICS.md' 
+              },
+              { 
+                name: 'Module 12: SplitFund, Social & Journal', 
+                slug: 'plannify-frontend-module-12', 
+                path: '/content/Projects/Plannify/frontend/12_SPLITFUND_SOCIAL_AND_JOURNAL.md' 
+              }
+            ]
+          },
+          { 
+            name: 'Backend', 
+            icon: <Terminal size={15} />,
+            items: [
+              {
+                name: 'Module 1: Server Architecture & Database',
+                slug: 'plannify-backend-module-1',
+                path: '/content/Projects/Plannify/backend/01_SERVER_ARCHITECTURE_AND_DATABASE.md'
+              },
+              {
+                name: 'Module 2: Auth Identity & User Management',
+                slug: 'plannify-backend-module-2',
+                path: '/content/Projects/Plannify/backend/02_AUTH_IDENTITY_AND_USER_MANAGEMENT.md'
+              },
+              {
+                name: 'Module 3: Delta Sync & Data Models',
+                slug: 'plannify-backend-module-3',
+                path: '/content/Projects/Plannify/backend/03_DELTA_SYNC_AND_DATA_MODELS.md'
+              },
+              {
+                name: 'Module 4: Media Pipeline & Journal API',
+                slug: 'plannify-backend-module-4',
+                path: '/content/Projects/Plannify/backend/04_MEDIA_PIPELINE_AND_JOURNAL_API.md'
+              },
+              {
+                name: 'Module 5: SplitFund Expense & Settlement API',
+                slug: 'plannify-backend-module-5',
+                path: '/content/Projects/Plannify/backend/05_SPLITFUND_EXPENSE_AND_SETTLEMENT_API.md'
+              },
+              {
+                name: 'Module 6: Social Communities & Feeds API',
+                slug: 'plannify-backend-module-6',
+                path: '/content/Projects/Plannify/backend/06_SOCIAL_COMMUNITIES_AND_FEEDS_API.md'
+              }
+            ]
+          }
+        ]
+      },
       { name: 'Forever Backend', path: '/content/Projects/Forever/backend.md' },
       { name: 'Forever Frontend', path: '/content/Projects/Forever/frontend.md' }
     ]

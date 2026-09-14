@@ -21,6 +21,8 @@ const sanitizeMermaidChart = (chartText) => {
 const directories = [
   './public/content/Projects/EMPLO/frontend',
   './public/content/Projects/EMPLO/backend',
+  './public/content/Projects/Plannify/frontend',
+  './public/content/Projects/Plannify/backend',
 ];
 
 async function testDiagrams() {
