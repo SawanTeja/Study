@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { SECTIONS, flattenItems } from '../components/Sidebar';
-import Mermaid from '../components/Mermaid';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+
+const Mermaid = React.lazy(() => import('../components/Mermaid'));
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
@@ -65,7 +66,15 @@ export default function MarkdownViewer() {
           code({node: _node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
             if (!inline && match && match[1] === 'mermaid') {
-              return <Mermaid chart={String(children).replace(/\n$/, '')} />;
+              return (
+                <React.Suspense fallback={
+                  <div className="mermaid-loading">
+                    <div className="spinner" style={{ width: 24, height: 24 }}></div>
+                  </div>
+                }>
+                  <Mermaid chart={String(children).replace(/\n$/, '')} />
+                </React.Suspense>
+              );
             }
             return !inline && match ? (
               <SyntaxHighlighter
