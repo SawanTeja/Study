@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Maximize2 } from 'lucide-react';
+import DiagramModal from './DiagramModal';
 
 mermaid.initialize({
   startOnLoad: false,
@@ -38,6 +40,7 @@ export default function Mermaid({ chart }) {
   const containerRef = useRef(null);
   const [svg, setSvg] = useState('');
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -106,10 +109,42 @@ export default function Mermaid({ chart }) {
   }
 
   return (
-    <div 
-      className="mermaid-container" 
-      ref={containerRef}
-      dangerouslySetInnerHTML={{ __html: svg }} 
-    />
+    <>
+      <div 
+        className="mermaid-wrapper" 
+        onClick={() => setIsModalOpen(true)}
+        title="Click to view diagram in full size"
+      >
+        <div className="mermaid-header-bar">
+          <span className="mermaid-badge">Diagram</span>
+          <button 
+            type="button" 
+            className="mermaid-expand-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(true);
+            }}
+            title="Expand to Fullscreen (Pan & Zoom)"
+          >
+            <Maximize2 size={13} />
+            <span>Open in Fullscreen</span>
+          </button>
+        </div>
+        <div 
+          className="mermaid-container" 
+          ref={containerRef}
+          dangerouslySetInnerHTML={{ __html: svg }} 
+        />
+        <div className="mermaid-footer-hint">
+          <span>Click diagram to expand &bull; Pan & Zoom enabled</span>
+        </div>
+      </div>
+
+      <DiagramModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        svg={svg}
+      />
+    </>
   );
 }

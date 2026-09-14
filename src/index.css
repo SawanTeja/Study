@@ -400,36 +400,271 @@ a {
 }
 
 /* Mermaid Diagram Styling */
+.mermaid-wrapper {
+  position: relative;
+  margin: 2.25rem 0;
+  background: var(--code-bg);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.mermaid-wrapper:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+.mermaid-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: rgba(255, 255, 255, 0.025);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.mermaid-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #93c5fd;
+  background: rgba(59, 130, 246, 0.12);
+  padding: 0.2rem 0.55rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(59, 130, 246, 0.25);
+}
+
+.mermaid-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mermaid-wrapper:hover .mermaid-expand-btn {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+}
+
 .mermaid-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 2rem 0;
-  padding: 1.75rem;
-  background: var(--code-bg);
-  border-radius: 0.5rem;
+  padding: 1.75rem 1.25rem;
   overflow-x: auto;
-  border: 1px solid rgba(128, 128, 128, 0.15);
+  min-height: 120px;
 }
 
 .mermaid-container svg {
   max-width: 100%;
   height: auto;
   display: block;
+  transition: opacity 0.2s ease;
+}
+
+.mermaid-footer-hint {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.4rem 1rem;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  opacity: 0.65;
+  background: rgba(0, 0, 0, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.03);
+  transition: opacity 0.15s ease;
+}
+
+.mermaid-wrapper:hover .mermaid-footer-hint {
+  opacity: 0.95;
+  color: #93c5fd;
 }
 
 .mermaid-loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 3rem;
+  padding: 3.5rem;
   background: var(--code-bg);
-  border-radius: 0.5rem;
-  margin: 2rem 0;
+  border-radius: 0.75rem;
+  margin: 2.25rem 0;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .mermaid-fallback {
-  margin: 2rem 0;
+  margin: 2.25rem 0;
+}
+
+/* Interactive Diagram Modal (Lightbox) */
+.diagram-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(8, 8, 12, 0.93);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  animation: modalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.diagram-modal-controls {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100000;
+  pointer-events: none;
+}
+
+.diagram-modal-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(22, 22, 28, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.5rem 0.9rem;
+  border-radius: 9999px;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.diagram-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(22, 22, 28, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0.35rem 0.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.diagram-control-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diagram-control-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  transform: scale(1.06);
+}
+
+.diagram-control-btn:active {
+  transform: scale(0.94);
+}
+
+.diagram-control-btn.close-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.diagram-zoom-indicator {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  min-width: 48px;
+  text-align: center;
+  border-radius: 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.diagram-zoom-indicator:hover {
+  color: #60a5fa;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.diagram-modal-viewport {
+  flex: 1;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+
+.diagram-modal-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.diagram-modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.05s linear;
+  will-change: transform;
+}
+
+.diagram-modal-content svg {
+  max-width: none !important;
+  max-height: none !important;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 12px 36px rgba(0, 0, 0, 0.6));
+}
+
+@media (max-width: 768px) {
+  .diagram-modal-controls {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    align-items: flex-end;
+    top: 1rem;
+    left: 1rem;
+    right: 1rem;
+  }
+  .diagram-modal-hint {
+    display: none;
+  }
 }
 
 /* Loading State */
