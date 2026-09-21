@@ -23,6 +23,7 @@ const directories = [
   './public/content/Projects/EMPLO/backend',
   './public/content/Projects/Plannify/frontend',
   './public/content/Projects/Plannify/backend',
+  './public/content/Projects/FluxDrop',
 ];
 
 async function testDiagrams() {

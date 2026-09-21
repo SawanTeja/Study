@@ -63,6 +63,23 @@ export default function MarkdownViewer() {
       <Markdown 
         remarkPlugins={[remarkGfm]}
         components={{
+          a({node: _node, href, children, ...props}) {
+            let targetHref = href || '';
+            if (targetHref.startsWith('file:///home/sawan/Tejashvi/FluxDrop/')) {
+              targetHref = targetHref.replace('file:///home/sawan/Tejashvi/FluxDrop/', 'https://github.com/SawanTeja/FluxDrop/blob/main/');
+            }
+            const isExternal = targetHref.startsWith('http://') || targetHref.startsWith('https://');
+            return (
+              <a
+                href={targetHref}
+                target={isExternal ? '_blank' : undefined}
+                rel={isExternal ? 'noopener noreferrer' : undefined}
+                {...props}
+              >
+                {children}
+              </a>
+            );
+          },
           code({node: _node, inline, className, children, ...props}) {
             const match = /language-(\w+)/.exec(className || '');
             if (!inline && match && match[1] === 'mermaid') {

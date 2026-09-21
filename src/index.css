@@ -375,6 +375,20 @@ a {
   font-weight: 600;
 }
 
+.markdown-body a {
+  color: #60a5fa;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(96, 165, 250, 0.4);
+  font-weight: 500;
+  transition: all 0.15s ease;
+}
+
+.markdown-body a:hover {
+  color: #93c5fd;
+  text-decoration-color: #93c5fd;
+}
+
 .markdown-body code {
   background: var(--code-bg);
   padding: 0.2rem 0.4rem;

@@ -152,6 +152,12 @@ export default function CodebaseViewer() {
       case 'html': return 'html';
       case 'json': return 'json';
       case 'md': return 'markdown';
+      case 'cpp': case 'hpp': case 'cc': case 'cxx': case 'c': case 'h': return 'cpp';
+      case 'cmake': return 'cmake';
+      case 'txt': return filename.toLowerCase() === 'cmakelists.txt' ? 'cmake' : 'text';
+      case 'dart': return 'dart';
+      case 'sh': case 'bash': return 'bash';
+      case 'yaml': case 'yml': return 'yaml';
       default: return 'text';
     }
   };

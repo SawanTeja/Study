@@ -280,7 +280,70 @@ export const SECTIONS = [
         ]
       },
       { name: 'Forever Backend', path: '/content/Projects/Forever/backend.md' },
-      { name: 'Forever Frontend', path: '/content/Projects/Forever/frontend.md' }
+      { name: 'Forever Frontend', path: '/content/Projects/Forever/frontend.md' },
+      {
+        name: 'FluxDrop',
+        isGroup: true,
+        icon: <Folder size={16} />,
+        subsections: [
+          {
+            name: 'Engine Architecture & Core',
+            icon: <Terminal size={15} />,
+            items: [
+              {
+                name: 'Module 01: System Architecture & Overview',
+                slug: 'fluxdrop-module-01-architecture-overview',
+                path: '/content/Projects/FluxDrop/01_architecture_and_overview.md'
+              },
+              {
+                name: 'Module 02: C API & Application Integration',
+                slug: 'fluxdrop-module-02-c-api-integration',
+                path: '/content/Projects/FluxDrop/02_c_api_and_integration.md'
+              },
+              {
+                name: 'Module 03: Binary Protocol & Wire Serialization',
+                slug: 'fluxdrop-module-03-protocol-serialization',
+                path: '/content/Projects/FluxDrop/03_protocol_and_packet_serialization.md'
+              },
+              {
+                name: 'Module 04: Security & Cryptography (libsodium)',
+                slug: 'fluxdrop-module-04-security-cryptography',
+                path: '/content/Projects/FluxDrop/04_security_and_cryptography.md'
+              },
+              {
+                name: 'Module 05: Boost.Asio & Network Abstraction',
+                slug: 'fluxdrop-module-05-boost-asio-networking',
+                path: '/content/Projects/FluxDrop/05_boost_asio_and_networking_deep_dive.md'
+              },
+              {
+                name: 'Module 06: Device Discovery Subsystem',
+                slug: 'fluxdrop-module-06-device-discovery',
+                path: '/content/Projects/FluxDrop/06_device_discovery_subsystem.md'
+              },
+              {
+                name: 'Module 07: Transfer Engine & Resumption Pipeline',
+                slug: 'fluxdrop-module-07-transfer-engine-resumption',
+                path: '/content/Projects/FluxDrop/07_transfer_engine_and_resumption.md'
+              },
+              {
+                name: 'Module 08: Bidirectional Session Architecture',
+                slug: 'fluxdrop-module-08-bidirectional-session',
+                path: '/content/Projects/FluxDrop/08_bidirectional_session_manager.md'
+              },
+              {
+                name: 'Module 09: Concurrency Model & Synchronization',
+                slug: 'fluxdrop-module-09-concurrency-threading',
+                path: '/content/Projects/FluxDrop/09_concurrency_threading_and_synchronization.md'
+              },
+              {
+                name: 'Module 10: Third-Party Libraries & Testing Guide',
+                slug: 'fluxdrop-module-10-testing-tooling',
+                path: '/content/Projects/FluxDrop/10_testing_tooling_and_third_party_libraries.md'
+              }
+            ]
+          }
+        ]
+      }
     ]
   },
   {
@@ -288,7 +351,8 @@ export const SECTIONS = [
     icon: <Code size={18} />,
     category: 'Codebase',
     items: [
-      { name: 'Forever Repository', repoOwner: 'SawanTeja', repoName: 'Forever', repoBranch: 'main' }
+      { name: 'Forever Repository', repoOwner: 'SawanTeja', repoName: 'Forever', repoBranch: 'main' },
+      { name: 'FluxDrop Repository', repoOwner: 'SawanTeja', repoName: 'FluxDrop', repoBranch: 'main' }
     ]
   }
 ];
