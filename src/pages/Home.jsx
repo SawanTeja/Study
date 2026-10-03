@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const FEATURES = [
   { title: 'Operating Systems', desc: 'OS Fundamentals, System Calls, Process Management', icon: <Monitor size={24} />, path: '/topic/OS/intro-to-os', filePath: '/content/OS/intro-to-os.md' },
   { title: 'DSA', desc: 'Master Data Structures & Algorithms', icon: <Layers size={24} />, path: '/topic/DSA/arrays', filePath: '/content/DSA/arrays.md' },
-  { title: 'OOP', desc: 'Object Oriented Principles & Design Patterns', icon: <Code size={24} />, path: '/topic/OOP/polymorphism', filePath: '/content/OOP/polymorphism.md' },
+  { title: 'OOP', desc: 'Object Oriented Principles & Design Patterns', icon: <Code size={24} />, path: '/topic/OOP/oop-fundamentals', filePath: '/content/OOP/oop-fundamentals.md' },
   { title: 'DBMS', desc: 'Database Management Systems & SQL', icon: <Database size={24} />, path: '/topic/DBMS/normalization', filePath: '/content/DBMS/normalization.md' },
   { title: 'Projects', desc: 'In-depth project guides & architecture', icon: <LayoutTemplate size={24} />, path: '/topic/Projects/e-commerce-platform', filePath: '/content/Projects/ecommerce.md' },
 ];

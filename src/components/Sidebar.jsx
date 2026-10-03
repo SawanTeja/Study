@@ -86,7 +86,10 @@ export const SECTIONS = [
     icon: <Code size={18} />,
     category: 'OOP',
     items: [
-      { name: 'Polymorphism', path: '/content/OOP/polymorphism.md' }
+      { name: 'OOP Fundamentals', path: '/content/OOP/oop-fundamentals.md' },
+      { name: 'Polymorphism', path: '/content/OOP/polymorphism.md' },
+      { name: 'Relationships & Advanced OOP', slug: 'advanced-oop', path: '/content/OOP/advanced-oop.md' },
+      { name: 'Design Patterns & Generics', slug: 'design-patterns', path: '/content/OOP/design-patterns.md' }
     ]
   },
   {
