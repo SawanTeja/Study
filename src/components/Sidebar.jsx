@@ -12,7 +12,8 @@ import {
   Folder,
   Globe,
   Terminal,
-  FileText
+  FileText,
+  PanelLeftClose
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 
@@ -362,7 +363,7 @@ const SidebarSubgroupComponent = ({ subgroup, category }) => {
   const location = useLocation();
   const subgroupFlat = flattenItems(subgroup.items, category);
   const hasActiveChild = subgroupFlat.some(item => location.pathname === item.routePath);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(hasActiveChild);
 
   useEffect(() => {
     if (hasActiveChild) {
@@ -411,7 +412,7 @@ const SidebarGroupComponent = ({ group, category }) => {
   const location = useLocation();
   const groupFlat = flattenItems([group], category);
   const hasActiveChild = groupFlat.some(item => location.pathname === item.routePath);
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(hasActiveChild);
 
   useEffect(() => {
     if (hasActiveChild) {
@@ -463,7 +464,7 @@ const SidebarSectionComponent = ({ section }) => {
   const sectionFlatItems = flattenItems(section.items, section.category);
   const isActiveSection = sectionFlatItems.some(item => location.pathname === item.routePath);
 
-  const [isOpen, setIsOpen] = useState(isActiveSection || section.category === 'Projects' || section.category === 'OS'); 
+  const [isOpen, setIsOpen] = useState(isActiveSection); 
 
   useEffect(() => {
     if (isActiveSection) {
@@ -508,12 +509,25 @@ const SidebarSectionComponent = ({ section }) => {
   );
 };
 
-export default function Sidebar() {
+export default function Sidebar({ onToggleCollapse }) {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <BookOpen size={24} className="sidebar-logo-icon" />
-        <span>PrepMaster</span>
+        <div className="sidebar-logo-brand">
+          <BookOpen size={24} className="sidebar-logo-icon" />
+          <span>PrepMaster</span>
+        </div>
+        {onToggleCollapse && (
+          <button 
+            type="button" 
+            className="sidebar-collapse-btn desktop-only"
+            onClick={onToggleCollapse}
+            title="Hide sidebar (Ctrl+B)"
+            aria-label="Hide sidebar"
+          >
+            <PanelLeftClose size={18} />
+          </button>
+        )}
       </div>
 
       <div className="sidebar-content">
