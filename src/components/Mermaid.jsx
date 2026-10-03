@@ -1,28 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import mermaid from 'mermaid';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Maximize2 } from 'lucide-react';
 import DiagramModal from './DiagramModal';
-
-mermaid.initialize({
-  startOnLoad: false,
-  theme: 'dark',
-  securityLevel: 'loose',
-  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  themeVariables: {
-    darkMode: true,
-    background: '#18181b',
-    primaryColor: '#3b82f6',
-    primaryTextColor: '#f3f4f6',
-    primaryBorderColor: '#60a5fa',
-    lineColor: '#93c5fd',
-    secondaryColor: '#1e293b',
-    tertiaryColor: '#0f172a',
-    mainBkg: '#1e1e24',
-    nodeBorder: '#3b82f6'
-  }
-});
+import { useTheme } from '../context/ThemeContext';
 
 // Sequential render queue to avoid concurrent DOM collisions in Mermaid
 let renderQueue = Promise.resolve();
@@ -36,7 +18,79 @@ const sanitizeMermaidChart = (chartText) => {
   });
 };
 
+const getMermaidConfig = (isDark) => {
+  if (isDark) {
+    return {
+      startOnLoad: false,
+      theme: 'dark',
+      securityLevel: 'loose',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      themeVariables: {
+        darkMode: true,
+        background: '#0d111a',
+        primaryColor: '#1e293b',
+        primaryTextColor: '#f8fafc',
+        primaryBorderColor: '#3b82f6',
+        lineColor: '#60a5fa',
+        secondaryColor: '#1e2638',
+        tertiaryColor: '#0b0f19',
+        mainBkg: '#111625',
+        nodeBorder: '#3b82f6',
+        clusterBkg: '#0d111a',
+        clusterBorder: '#334155',
+        titleColor: '#f8fafc',
+        edgeLabelBackground: '#1e293b',
+        actorBkg: '#1e293b',
+        actorBorder: '#3b82f6',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#60a5fa',
+        signalColor: '#60a5fa',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: '#1e293b',
+        labelBoxBorderColor: '#3b82f6',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc'
+      }
+    };
+  }
+
+  // Light mode configuration
+  return {
+    startOnLoad: false,
+    theme: 'default',
+    securityLevel: 'loose',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    themeVariables: {
+      darkMode: false,
+      background: '#ffffff',
+      primaryColor: '#eff6ff',
+      primaryTextColor: '#0f172a',
+      primaryBorderColor: '#2563eb',
+      lineColor: '#2563eb',
+      secondaryColor: '#f8fafc',
+      tertiaryColor: '#f1f5f9',
+      mainBkg: '#f8fafc',
+      nodeBorder: '#3b82f6',
+      clusterBkg: '#f1f5f9',
+      clusterBorder: '#cbd5e1',
+      titleColor: '#0f172a',
+      edgeLabelBackground: '#ffffff',
+      actorBkg: '#eff6ff',
+      actorBorder: '#2563eb',
+      actorTextColor: '#0f172a',
+      actorLineColor: '#2563eb',
+      signalColor: '#2563eb',
+      signalTextColor: '#0f172a',
+      labelBoxBkgColor: '#eff6ff',
+      labelBoxBorderColor: '#2563eb',
+      labelTextColor: '#0f172a',
+      loopTextColor: '#0f172a'
+    }
+  };
+};
+
 export default function Mermaid({ chart }) {
+  const { isDark } = useTheme();
   const containerRef = useRef(null);
   const [svg, setSvg] = useState('');
   const [error, setError] = useState(null);
@@ -67,6 +121,7 @@ export default function Mermaid({ chart }) {
       document.body.appendChild(tempDiv);
 
       try {
+        mermaid.initialize(getMermaidConfig(isDark));
         const cleanedChart = sanitizeMermaidChart(chart.trim());
         const { svg: renderedSvg } = await mermaid.render(id, cleanedChart, tempDiv);
         if (isMounted) {
@@ -88,12 +143,16 @@ export default function Mermaid({ chart }) {
     return () => {
       isMounted = false;
     };
-  }, [chart]);
+  }, [chart, isDark]);
 
   if (error) {
     return (
       <div className="mermaid-fallback">
-        <SyntaxHighlighter language="mermaid" style={vscDarkPlus} PreTag="div">
+        <SyntaxHighlighter 
+          language="mermaid" 
+          style={isDark ? vscDarkPlus : oneLight} 
+          PreTag="div"
+        >
           {chart}
         </SyntaxHighlighter>
       </div>

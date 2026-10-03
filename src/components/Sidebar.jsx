@@ -14,6 +14,7 @@ import {
   Terminal,
   FileText
 } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 export const flattenItems = (items, category) => {
   let result = [];
@@ -511,26 +512,33 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <BookOpen size={24} color="#60a5fa" />
+        <BookOpen size={24} className="sidebar-logo-icon" />
         <span>PrepMaster</span>
       </div>
 
-      <nav className="sidebar-nav">
-        <NavLink 
-          to="/" 
-          className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
-          end
-        >
-          <BookOpen size={18} />
-          <span>Overview</span>
-        </NavLink>
-        
-        <div style={{ height: '2rem' }}></div>
+      <div className="sidebar-content">
+        <nav className="sidebar-nav">
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => isActive ? 'nav-item active' : 'nav-item'}
+            end
+          >
+            <BookOpen size={18} />
+            <span>Overview</span>
+          </NavLink>
+          
+          <div style={{ height: '1.25rem' }}></div>
 
-        {SECTIONS.map((section, idx) => (
-          <SidebarSectionComponent key={idx} section={section} />
-        ))}
-      </nav>
+          {SECTIONS.map((section, idx) => (
+            <SidebarSectionComponent key={idx} section={section} />
+          ))}
+        </nav>
+      </div>
+
+      <div className="sidebar-footer">
+        <div className="sidebar-footer-title">Theme</div>
+        <ThemeToggle variant="segmented" />
+      </div>
     </aside>
   );
 }

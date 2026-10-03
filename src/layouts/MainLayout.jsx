@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
+import ThemeToggle from '../components/ThemeToggle';
 import { Menu, X } from 'lucide-react';
 
 export default function MainLayout() {
@@ -16,10 +17,20 @@ export default function MainLayout() {
     <div className="app-container">
       {/* Mobile Top Bar */}
       <div className="mobile-top-bar">
-        <button className="mobile-menu-btn" onClick={() => setIsSidebarOpen(true)}>
-          <Menu size={24} />
-        </button>
-        <span className="mobile-title">PrepMaster</span>
+        <div className="mobile-top-left">
+          <button 
+            type="button"
+            className="mobile-menu-btn" 
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Open sidebar menu"
+          >
+            <Menu size={22} />
+          </button>
+          <span className="mobile-title">PrepMaster</span>
+        </div>
+        <div className="mobile-top-right">
+          <ThemeToggle variant="compact" />
+        </div>
       </div>
 
       {/* Overlay for mobile */}

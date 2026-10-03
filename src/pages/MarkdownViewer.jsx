@@ -3,12 +3,71 @@ import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { SECTIONS, flattenItems } from '../components/Sidebar';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Copy, Check } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
 const Mermaid = React.lazy(() => import('../components/Mermaid'));
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { vscDarkPlus, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+
+function CodeBlock({ language, value, isDark }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error('Failed to copy', e);
+    }
+  };
+
+  return (
+    <div className="code-block-wrapper">
+      <div className="code-block-header">
+        <span className="code-block-lang">{language || 'code'}</span>
+        <button
+          type="button"
+          className="code-copy-btn"
+          onClick={handleCopy}
+          title={copied ? 'Copied to clipboard!' : 'Copy code'}
+          aria-label={copied ? 'Code copied' : 'Copy code to clipboard'}
+        >
+          {copied ? (
+            <>
+              <Check size={13} />
+              <span>Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy size={13} />
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+      <div className="code-block-content">
+        <SyntaxHighlighter
+          language={language || 'text'}
+          style={isDark ? vscDarkPlus : oneLight}
+          customStyle={{
+            margin: 0,
+            padding: '1rem 1.25rem',
+            background: 'transparent',
+            fontSize: '0.875rem'
+          }}
+          PreTag="div"
+        >
+          {value}
+        </SyntaxHighlighter>
+      </div>
+    </div>
+  );
+}
 
 export default function MarkdownViewer() {
+  const { isDark } = useTheme();
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const location = useLocation();
@@ -93,15 +152,16 @@ export default function MarkdownViewer() {
                 </React.Suspense>
               );
             }
-            return !inline && match ? (
-              <SyntaxHighlighter
-                {...props}
-                children={String(children).replace(/\n$/, '')}
-                style={vscDarkPlus}
-                language={match[1]}
-                PreTag="div"
-              />
-            ) : (
+            if (!inline && match) {
+              return (
+                <CodeBlock 
+                  language={match[1]} 
+                  value={String(children).replace(/\n$/, '')} 
+                  isDark={isDark} 
+                />
+              );
+            }
+            return (
               <code {...props} className={className}>
                 {children}
               </code>
@@ -115,6 +175,7 @@ export default function MarkdownViewer() {
       <div className="content-navigation">
         {prevItem ? (
           <button 
+            type="button"
             className="nav-btn"
             onClick={() => navigate(prevItem.routePath, { state: { filePath: prevItem.path } })}
           >
@@ -125,6 +186,7 @@ export default function MarkdownViewer() {
         
         {nextItem ? (
           <button 
+            type="button"
             className="nav-btn nav-btn-next"
             onClick={() => navigate(nextItem.routePath, { state: { filePath: nextItem.path } })}
           >

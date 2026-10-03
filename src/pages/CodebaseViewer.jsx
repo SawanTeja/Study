@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
-import { Folder, File, ChevronRight, ChevronDown } from 'lucide-react';
+import { vscDarkPlus, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Folder, FolderOpen, File, ChevronRight, ChevronDown, Copy, Check } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
 
-const FileTreeNode = ({ node, onFileSelect, level = 0 }) => {
+const FileTreeNode = ({ node, onFileSelect, selectedPath, level = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const isDir = node.type === 'directory';
+  const isSelected = selectedPath === node.path;
 
   const handleClick = () => {
     if (isDir) {
@@ -18,30 +20,43 @@ const FileTreeNode = ({ node, onFileSelect, level = 0 }) => {
   };
 
   return (
-    <div className="select-none">
+    <div className="codebase-tree-node">
       <div 
-        className="flex items-center gap-1.5 py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded cursor-pointer text-sm"
-        style={{ paddingLeft: `${level * 12 + 8}px` }}
+        className={`codebase-tree-row ${isSelected ? 'active' : ''}`}
+        style={{ paddingLeft: `${level * 14 + 10}px` }}
         onClick={handleClick}
+        title={node.name}
       >
         {isDir ? (
           <>
-            {isOpen ? <ChevronDown size={14} className="opacity-50" /> : <ChevronRight size={14} className="opacity-50" />}
-            <Folder size={14} className="text-blue-500" />
+            <span className="codebase-chevron">
+              {isOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            </span>
+            {isOpen ? (
+              <FolderOpen size={15} className="codebase-icon folder-open" />
+            ) : (
+              <Folder size={15} className="codebase-icon folder" />
+            )}
           </>
         ) : (
           <>
-            <span className="w-[14px]"></span>
-            <File size={14} className="text-gray-500" />
+            <span className="codebase-chevron-spacer"></span>
+            <File size={15} className="codebase-icon file" />
           </>
         )}
-        <span className="truncate">{node.name}</span>
+        <span className="codebase-node-name">{node.name}</span>
       </div>
       
       {isDir && isOpen && node.children && (
-        <div className="flex flex-col">
+        <div className="codebase-tree-children">
           {node.children.map((child, idx) => (
-            <FileTreeNode key={idx} node={child} onFileSelect={onFileSelect} level={level + 1} />
+            <FileTreeNode 
+              key={idx} 
+              node={child} 
+              onFileSelect={onFileSelect} 
+              selectedPath={selectedPath} 
+              level={level + 1} 
+            />
           ))}
         </div>
       )}
@@ -54,7 +69,6 @@ function buildTreeFromGitHub(flatTree) {
   const root = { name: 'root', type: 'directory', children: [] };
   
   flatTree.forEach(item => {
-    // skip irrelevant files like we did in local script
     if (item.path.includes('.git/') || item.path.includes('node_modules/') || item.path.includes('.DS_Store')) return;
     
     const parts = item.path.split('/');
@@ -78,7 +92,6 @@ function buildTreeFromGitHub(flatTree) {
     }
   });
 
-  // Recursive sort function
   const sortTree = (node) => {
     if (node.children) {
       node.children.sort((a, b) => {
@@ -94,6 +107,7 @@ function buildTreeFromGitHub(flatTree) {
 }
 
 export default function CodebaseViewer() {
+  const { isDark } = useTheme();
   const location = useLocation();
   const { repo } = useParams();
   
@@ -105,6 +119,7 @@ export default function CodebaseViewer() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [fileContent, setFileContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -129,7 +144,6 @@ export default function CodebaseViewer() {
   const handleFileSelect = (node) => {
     setSelectedFile(node);
     
-    // Fetch raw content from GitHub
     const rawUrl = `https://raw.githubusercontent.com/${repoOwner}/${repoName}/${repoBranch}/${node.path}`;
     
     fetch(rawUrl)
@@ -141,6 +155,17 @@ export default function CodebaseViewer() {
       .catch(err => {
         setFileContent(`Error loading file: ${err.message}`);
       });
+  };
+
+  const handleCopy = async () => {
+    if (!fileContent) return;
+    try {
+      await navigator.clipboard.writeText(fileContent);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error('Failed to copy', e);
+    }
   };
 
   const getLanguage = (filename) => {
@@ -163,36 +188,81 @@ export default function CodebaseViewer() {
   };
 
   if (loading) {
-    return <div className="loading-container">Loading Codebase from GitHub...</div>;
+    return (
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Loading codebase from GitHub...</p>
+      </div>
+    );
   }
 
   if (!tree) {
-    return <div className="loading-container">Failed to load codebase.</div>;
+    return (
+      <div className="loading-container">
+        <p>Failed to load codebase repository.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col md:flex-row h-[80vh] gap-4 mb-8">
+    <div className="codebase-container">
       {/* File Explorer Sidebar */}
-      <div className="w-full md:w-64 flex-shrink-0 border border-gray-200 dark:border-gray-800 rounded-lg overflow-y-auto bg-white dark:bg-[#111111] p-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-3 px-2 pt-2">Explorer</h3>
-        {tree.children && tree.children.map((child, idx) => (
-           <FileTreeNode key={idx} node={child} onFileSelect={handleFileSelect} />
-        ))}
+      <div className="codebase-explorer">
+        <div className="codebase-explorer-header">
+          <span className="codebase-explorer-title">Explorer</span>
+          <span className="codebase-repo-badge">{repoName}</span>
+        </div>
+        <div className="codebase-tree-scroll">
+          {tree.children && tree.children.map((child, idx) => (
+            <FileTreeNode 
+              key={idx} 
+              node={child} 
+              onFileSelect={handleFileSelect} 
+              selectedPath={selectedFile?.path}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Code Viewer */}
-      <div className="flex-1 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden bg-[#1e1e1e] flex flex-col">
+      <div className="codebase-viewer">
         {selectedFile ? (
           <>
-            <div className="bg-[#2d2d2d] text-gray-300 text-sm px-4 py-2 border-b border-gray-800 flex items-center gap-2">
-              <File size={14} />
-              {selectedFile.name}
+            <div className="codebase-viewer-header">
+              <div className="codebase-viewer-file-info">
+                <File size={15} />
+                <span className="codebase-viewer-file-name">{selectedFile.name}</span>
+                <span className="codebase-viewer-file-path">{selectedFile.path}</span>
+              </div>
+              <button 
+                type="button" 
+                className="code-copy-btn" 
+                onClick={handleCopy}
+                title={copied ? 'Copied to clipboard!' : 'Copy full file content'}
+              >
+                {copied ? (
+                  <>
+                    <Check size={13} />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={13} />
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
             </div>
-            <div className="overflow-y-auto flex-1">
+            <div className="codebase-viewer-body">
               <SyntaxHighlighter
                 language={getLanguage(selectedFile.name)}
-                style={vscDarkPlus}
-                customStyle={{ margin: 0, padding: '1rem', background: 'transparent' }}
+                style={isDark ? vscDarkPlus : oneLight}
+                customStyle={{ 
+                  margin: 0, 
+                  padding: '1.25rem', 
+                  background: 'transparent',
+                  fontSize: '0.875rem' 
+                }}
                 showLineNumbers={true}
               >
                 {fileContent}
@@ -200,8 +270,9 @@ export default function CodebaseViewer() {
             </div>
           </>
         ) : (
-          <div className="flex items-center justify-center h-full text-gray-500">
-            Select a file from the explorer to view its contents
+          <div className="codebase-viewer-empty">
+            <File size={36} className="codebase-empty-icon" />
+            <p>Select a file from the explorer to view its contents</p>
           </div>
         )}
       </div>
