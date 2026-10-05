@@ -97,7 +97,16 @@ export const SECTIONS = [
     icon: <Database size={18} />,
     category: 'DBMS',
     items: [
-      { name: 'Normalization', path: '/content/DBMS/normalization.md' }
+      { name: 'Database Fundamentals', slug: 'dbms-fundamentals', path: '/content/DBMS/dbms-fundamentals.md' },
+      { name: 'Relational Model & ER', slug: 'relational-model-er', path: '/content/DBMS/relational-model-er.md' },
+      { name: 'SQL Fundamentals', slug: 'sql-fundamentals', path: '/content/DBMS/sql-fundamentals.md' },
+      { name: 'Joins & Subqueries', slug: 'sql-joins-subqueries', path: '/content/DBMS/sql-joins-subqueries.md' },
+      { name: 'Normalization & Design', slug: 'normalization', path: '/content/DBMS/normalization.md' },
+      { name: 'Window Functions & Advanced SQL', slug: 'sql-intermediate', path: '/content/DBMS/sql-intermediate.md' },
+      { name: 'Transactions & Concurrency', slug: 'transactions-concurrency', path: '/content/DBMS/transactions-concurrency.md' },
+      { name: 'Indexing & Performance', slug: 'indexing-performance', path: '/content/DBMS/indexing-performance.md' },
+      { name: 'DBMS Internals', slug: 'dbms-internals', path: '/content/DBMS/dbms-internals.md' },
+      { name: 'Real-World Database Design', slug: 'real-world-db-design', path: '/content/DBMS/real-world-db-design.md' }
     ]
   },
   {
