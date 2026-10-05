@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Sidebar from '../components/Sidebar';
+import Sidebar, { SECTIONS, flattenItems } from '../components/Sidebar';
 import ThemeToggle from '../components/ThemeToggle';
-import { Menu, X, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { Menu, X, PanelLeftOpen, PanelLeftClose, ChevronRight } from 'lucide-react';
 
 export default function MainLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -43,6 +43,22 @@ export default function MainLayout() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Compute breadcrumb navigation for persistent header
+  const currentBreadcrumb = useMemo(() => {
+    if (location.pathname === '/') {
+      return { section: 'PrepMaster', title: 'Overview' };
+    }
+    const all = SECTIONS.flatMap(section => {
+      const items = flattenItems(section.items, section.category);
+      return items.map(it => ({ ...it, sectionTitle: section.title }));
+    });
+    const matched = all.find(it => it.routePath === location.pathname);
+    if (matched) {
+      return { section: matched.sectionTitle, title: matched.name };
+    }
+    return null;
+  }, [location.pathname]);
+
   return (
     <div className={`app-container ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
       {/* Mobile Top Bar */}
@@ -81,27 +97,45 @@ export default function MainLayout() {
         <Sidebar onToggleCollapse={toggleSidebarCollapse} />
       </div>
 
-      {/* Main Content Area */}
-      <main className="main-content">
-        {/* Desktop Top Header Bar with Sidebar Toggle */}
-        <div className="main-top-toolbar desktop-only">
-          <button
-            type="button"
-            className="sidebar-toolbar-btn"
-            onClick={toggleSidebarCollapse}
-            title={isCollapsed ? "Show sidebar (Ctrl+B)" : "Hide sidebar (Ctrl+B)"}
-            aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
-          >
-            {isCollapsed ? <PanelLeftOpen size={18} /> : <PanelLeftClose size={18} />}
-            <span>{isCollapsed ? 'Show Sidebar' : 'Hide Sidebar'}</span>
-            <kbd className="sidebar-shortcut-badge">Ctrl+B</kbd>
-          </button>
-        </div>
+      {/* Main Area with Always-Visible Sticky Top Header */}
+      <div className="main-area">
+        {/* Desktop Sticky Header Bar — Stays visible regardless of scroll depth */}
+        <header className="main-sticky-header desktop-only">
+          <div className="main-header-left">
+            <button
+              type="button"
+              className={`sidebar-toolbar-btn ${isCollapsed ? 'is-collapsed' : ''}`}
+              onClick={toggleSidebarCollapse}
+              title={isCollapsed ? "Show sidebar (Ctrl+B)" : "Hide sidebar (Ctrl+B)"}
+              aria-label={isCollapsed ? "Show sidebar" : "Hide sidebar"}
+            >
+              {isCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
+              <span>{isCollapsed ? 'Show Sidebar' : 'Hide Sidebar'}</span>
+              <kbd className="sidebar-shortcut-badge">Ctrl+B</kbd>
+            </button>
 
-        <div className="content-wrapper">
-          <Outlet />
-        </div>
-      </main>
+            {currentBreadcrumb && (
+              <div className="header-breadcrumb">
+                <span className="breadcrumb-category">{currentBreadcrumb.section}</span>
+                <ChevronRight size={13} className="breadcrumb-chevron" />
+                <span className="breadcrumb-title">{currentBreadcrumb.title}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="main-header-right">
+            <ThemeToggle variant="compact" />
+          </div>
+        </header>
+
+        {/* Scrollable Content Container */}
+        <main className="main-content">
+          <div className="content-wrapper">
+            <Outlet />
+          </div>
+        </main>
+      </div>
     </div>
   );
 }
+
